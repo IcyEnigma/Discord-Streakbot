@@ -47,11 +47,11 @@ async def input(ctx):
     today = date.today()
     datajson = open(r"./data.json", 'r')
     jsonFile = json.loads(datajson.read())
-    print(type(jsonFile))
     datajson.close()
     for element in jsonFile['elements']:
         if element['user_id'] == ctx.author.id:
-            if(element['dataRecord'][f'{today}']):
+            todayKey = str(today)
+            if(todayKey in element['dataRecord'].keys()):
                 todayData = element['dataRecord'][f'{today}']
                 await ctx.send(f"Input already recorded today as '{todayData}'. Use *edit command to edit")
                 return
@@ -82,7 +82,7 @@ async def input(ctx):
                         datajsonOut.write(json.dumps(jsonFile))
                         datajsonOut.close()
                         print(f"input updated : {jsonFile['elements'][i]}")
-                        await ctx.send(f"Input recorded as '{m}' for {today}. Very Naice")
+                        await ctx.send(f"Input from {ctx.author.name} recorded as '{m}' for {today}. Very Naice")
             else:
                 await ctx.send("Invalid input, type *input to try again")
     except asyncio.TimeoutError:
@@ -123,7 +123,7 @@ async def edit(ctx):
                         datajsonOut.write(json.dumps(jsonFile))
                         datajsonOut.close()
                         print(f"input updated : {jsonFile['elements'][i]}")
-                        await ctx.send(f"Input changed to '{m}' for {today}. Very Naice")
+                        await ctx.send(f"Input changed by {ctx.author.name} to '{m}' for {today}. Very Naice")
             else:
                 await ctx.send("Invalid input, type *input to try again")
     except asyncio.TimeoutError:
