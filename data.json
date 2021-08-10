@@ -1,4 +1,17 @@
 {
   "file": "streakBot-Data",
-  "elements": []
+  "elements": [
+    {
+      "name": "ManushaPiravi",
+      "mention": "<@506454632919466004>",
+      "user_id": 506454632919466004,
+      "dataRecord": {}
+    },
+    {
+      "name": "riticulous",
+      "mention": "<@757574635922653194>",
+      "user_id": 757574635922653194,
+      "dataRecord": {}
+    }
+  ]
 }
