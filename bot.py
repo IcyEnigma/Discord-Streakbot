@@ -57,7 +57,8 @@ async def input(ctx):
                 return
     embed = discord.Embed(
         title = f"Enter the values for {today}",
-        description ="||This request will timeout in 2 minuites||")
+        description ="||This request will timeout in 2 minuites||",
+        colour = discord.Colour.orange())
     sent = await ctx.send(embed = embed)
     def check(m):
         if(ctx.author == m.author and m.channel == ctx.channel):
@@ -67,7 +68,6 @@ async def input(ctx):
         if msg:
             await sent.delete()
             await msg.delete()
-            print("input detected")
             m = msg.content
             def charCheck(s):
                 for i in s:
@@ -99,7 +99,8 @@ async def edit(ctx):
     datajson.close()
     embed = discord.Embed(
         title = f"Enter the edited values for {today}",
-        description ="||This request will timeout in 2 minuites||")
+        description ="||This request will timeout in 2 minuites||",
+        colour = discord.Colour.orange())
     sent = await ctx.send(embed = embed)
     def check(m):
         if(ctx.author == m.author and m.channel == ctx.channel):
@@ -130,4 +131,60 @@ async def edit(ctx):
         await sent.delete()
         await ctx.send("Cancelling due to timeout",delete_after=10)
 
+@client.command()
+async def view(ctx):
+    def yncount(user):
+        totalstr = " "
+        for i in user['dataRecord'].values():
+            totalstr += i
+        ycount = totalstr.count("y")
+        ncount = totalstr.count("n")
+        latestStreak = 0
+        for i in range(len(totalstr)-1, 0, -1):
+            if totalstr[i] == "y":
+                latestStreak += 1
+            elif(totalstr[i] == "n"):
+                break
+
+        current_streak=0
+        biggest_streak=0
+        for i in totalstr:
+            if i=='y':
+                current_streak+=1
+            if(i=='n' or i==totalstr[len(totalstr)-1]):
+                if current_streak>biggest_streak:
+                    biggest_streak=current_streak
+        if(len(totalstr)<=10):
+            lateststr = totalstr
+        else:
+            lateststr = totalstr[len(totalstr)-11:]
+        return [ycount, ncount, latestStreak, biggest_streak, lateststr]
+
+    datajson = open(r"./data.json", 'r')
+    jsonFile = json.loads(datajson.read())
+    datajson.close()
+    infodict = {}
+    for element in jsonFile['elements']:
+        if(len(element['dataRecord'])==0):
+            await ctx.send(f"No inputs available to display for {element['name']}")
+        infodict[f"{element['name']}"] = yncount(element)
+    embed=discord.Embed(title="User-Scores", colour = discord.Colour.orange())
+    embed.add_field(name = "Data", value = """
+    Paid Attention:  
+    Zoned Out:
+    Current Streak:  
+    Highest Streak:
+    Recent Record:  
+    """, inline=True)
+    for i in infodict.keys():
+        embed.add_field(name=f"{i}", value=f"""
+        {infodict[i][0]}
+        {infodict[i][1]}
+        {infodict[i][2]}
+        {infodict[i][3]}
+        {infodict[i][4]}
+        """, inline=True) 
+
+    embed.set_footer(text="ggwp")
+    await ctx.send(embed=embed)
 client.run(TOKEN)
