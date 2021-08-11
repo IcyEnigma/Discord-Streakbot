@@ -12,6 +12,9 @@ client = commands.Bot(command_prefix='*')
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
+@client.command()
+async def hi(ctx):
+    await ctx.send("Hello!")
 
 @client.command()
 async def init(ctx):
