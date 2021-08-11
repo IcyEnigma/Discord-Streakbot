@@ -14,7 +14,7 @@ async def on_ready():
 
 @client.command()
 async def hi(ctx):
-    await ctx.send("Hello!")
+    await ctx.send(f"Hi there {ctx.author.name}!")
 
 @client.command()
 async def init(ctx):
