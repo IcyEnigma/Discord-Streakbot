@@ -95,7 +95,6 @@ async def edit(ctx):
     today = date.today()
     datajson = open(r"./data.json", 'r')
     jsonFile = json.loads(datajson.read())
-    print(type(jsonFile))
     datajson.close()
     embed = discord.Embed(
         title = f"Enter the edited values for {today}",
