@@ -1,13 +1,10 @@
 import discord
 from discord.ext import commands
 import os
-from dotenv import load_dotenv
 import json
 from datetime import date
 import asyncio
 
-load_dotenv()
-TOKEN = os.getenv('DISCORD_TOKEN')
 client = commands.Bot(command_prefix='*')
 
 
@@ -187,4 +184,4 @@ async def view(ctx):
 
     embed.set_footer(text="ggwp")
     await ctx.send(embed=embed)
-client.run(TOKEN)
+client.run("ODc0Mjk4MDQ0MDg1MDU5NTk0.YRE7gQ._I44cEpJCRwBxxfDbUB42L4GfPQ")
