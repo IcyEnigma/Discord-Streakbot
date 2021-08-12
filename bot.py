@@ -196,7 +196,7 @@ async def viewall(ctx):
     for user in jsonFile['elements']:
         embed = discord.Embed(title = f"{user['name']}'s record", colour = discord.Colour.orange())
         for i in user['dataRecord'].keys():
-            embed.add_field(name = f"{i}", value = f"{user['dataRecord'][i]}", inline=True)
+            embed.add_field(name = f"{i}", value = f"{user['dataRecord'][i]}", inline=False)
         await ctx.send(embed=embed)
-        
+
 client.run("ODc0Mjk4MDQ0MDg1MDU5NTk0.YRE7gQ._I44cEpJCRwBxxfDbUB42L4GfPQ")
