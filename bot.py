@@ -153,6 +153,7 @@ async def view(ctx):
             if(i=='n' or i==totalstr[len(totalstr)-1]):
                 if current_streak>biggest_streak:
                     biggest_streak=current_streak
+                    current_streak=0
         if(len(totalstr)<=10):
             lateststr = totalstr
         else:
@@ -186,4 +187,16 @@ async def view(ctx):
 
     embed.set_footer(text="ggwp")
     await ctx.send(embed=embed)
+
+@client.command()
+async def viewall(ctx):
+    datajson = open(r"./data.json", 'r')
+    jsonFile = json.loads(datajson.read())
+    datajson.close()
+    for user in jsonFile['elements']:
+        embed = discord.Embed(title = f"{user['name']}'s record", colour = discord.Colour.orange())
+        for i in user['dataRecord'].keys():
+            embed.add_field(name = f"{i}", value = f"{user['dataRecord'][i]}", inline=True)
+        await ctx.send(embed=embed)
+        
 client.run("ODc0Mjk4MDQ0MDg1MDU5NTk0.YRE7gQ._I44cEpJCRwBxxfDbUB42L4GfPQ")
