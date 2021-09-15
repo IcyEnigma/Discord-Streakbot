@@ -25,4 +25,9 @@ password=url.password,
 host=url.hostname,
 port=url.port
 )
+cursor = conn.cursor()
+cursor.execute('''ALTER TABLE "public"."userdata" DROP COLUMN "15_09_21";''')
+conn.commit()
+cursor.close()
+conn.close()
 
