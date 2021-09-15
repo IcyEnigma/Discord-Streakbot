@@ -4,6 +4,7 @@ import os
 import json
 from datetime import date
 import asyncio
+import sqlFunctions as sf
 
 client = commands.Bot(command_prefix='*')
 
@@ -19,27 +20,18 @@ async def hi(ctx):
 @client.command()
 async def init(ctx):
     botUser = ctx.author
-    datajson = open(r"./data.json", 'r')
-    jsonFile = json.loads(datajson.read())
+    userList = sf.getUsers()
     userCheck = False
-    for element in jsonFile['elements']:
-        if botUser.id == element['user_id']:
+    for user in userList:
+        if str(botUser.id) == user:
             userCheck = True
     if userCheck:
         await ctx.send(f"{ctx.author.mention} has already been initialized.")
     else:
-        jsonFile['elements'].append({
-            'name': botUser.name,
-            'mention': botUser.mention,
-            'user_id': botUser.id,
-            'dataRecord': {}
-        })
-        datajson.close()
-        datajsonOut = open(r"./data.json", 'w')
-        datajsonOut.write(json.dumps(jsonFile))
-        datajsonOut.close()
-        await ctx.send(f"{ctx.author.mention} has been initialized as a User.")
-    print("New user initialized ", jsonFile['elements'])
+        done = sf.addUser(botUser)
+        if done:
+            await ctx.send(f"{ctx.author.mention} has been initialized as a User.")
+    print("init command :", botUser.name)
 
 @client.command()
 async def input(ctx):
