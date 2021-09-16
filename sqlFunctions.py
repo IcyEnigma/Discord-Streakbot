@@ -34,10 +34,10 @@ def checkRecord(userid):
     except psycopg2.errors.UndefinedColumn:
         print("NO ENTRY")
         return False
-    if(str(cursor.fetchall()[0][0]) == "None"):
+    fetchedData = cursor.fetchall()
+    if(str(fetchedData[0][0]) == "None"):
         return False
-    resList =  cursor.fetchall()
-    final = reslist[0][0]
+    final = fetchedData[0][0]
     return final
 
 def getColumns():
@@ -76,3 +76,4 @@ def inputData(userid, data):
         print(f"data updated for {userid} as ",cursor.fetchall())
     
 
+# print(checkRecord('1'))

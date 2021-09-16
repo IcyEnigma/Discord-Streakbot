@@ -39,7 +39,7 @@ async def input(ctx):
     today = date.today()
     dateRecord = sf.checkRecord(ctx.author.id);
     if dateRecord:
-        await ctx.send(f"Input already recorded today as '{dataRecord}'. Use *edit command to edit")
+        await ctx.send(f"Input already recorded today as '{dateRecord}'. Use *edit command to edit")
         return
     else:
         embed = discord.Embed(
