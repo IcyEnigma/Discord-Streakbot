@@ -37,14 +37,15 @@ async def init(ctx):
 async def input(ctx):
     await ctx.message.delete()
     today = date.today()
-    datajson = open(r"./data.json", 'r')
-    jsonFile = json.loads(datajson.read())
-    datajson.close()
-    for element in jsonFile['elements']:
-        if element['user_id'] == ctx.author.id:
-            todayKey = str(today)
-            if(todayKey in element['dataRecord'].keys()):
-                todayData = element['dataRecord'][f'{today}']
+    # datajson = open(r"./data.json", 'r')
+    # jsonFile = json.loads(datajson.read())
+    # datajson.close()
+    # for element in jsonFile['elements']:
+    #     if element['user_id'] == ctx.author.id:
+    #         todayKey = str(today)
+    #         if(todayKey in element['dataRecord'].keys()):
+    #             todayData = element['dataRecord'][f'{today}']
+    dateRecord = sf.checkRecord(ctx.author.id);
                 await ctx.send(f"Input already recorded today as '{todayData}'. Use *edit command to edit")
                 return
     embed = discord.Embed(

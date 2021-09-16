@@ -1,6 +1,7 @@
 import os
 import urllib.parse as up
 import psycopg2
+from datetime import date
 
 up.uses_netloc.append("postgres")
 os.environ['DATABASE_URL'] = "postgres://hohnpdua:d93cg63E-CWeTLRWysWrHZ-RCXfmpx4K@john.db.elephantsql.com/hohnpdua"
@@ -26,3 +27,19 @@ def addUser(user):
     conn.commit()
     return True
 
+def checkRecord(user):
+    today = date.today()
+    today = str(today).replace("-","_")
+    try:
+        cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{user.id}';''')
+    except psycopg2.errors.UndefinedColumn:
+        print("NO ENTRY")
+        return False
+    if(cursor.rowcount == 0):
+        return False
+    resList =  cursor.fetchall()
+    final = []
+    for i in resList:
+        final.append(i[0])
+    print(final)
+    return final
