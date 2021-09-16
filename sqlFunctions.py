@@ -32,7 +32,6 @@ def checkRecord(userid):
     try:
         cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
     except psycopg2.errors.UndefinedColumn:
-        print("NO ENTRY")
         return False
     fetchedData = cursor.fetchall()
     if(str(fetchedData[0][0]) == "None"):
@@ -69,11 +68,21 @@ def inputData(userid, data):
         cursor.execute(f'''ALTER TABLE "public"."userTable" ADD COLUMN "{today}" varchar(10);''')
         conn.commit()
     cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
-    if (str(cursor.fetchall()[0][0]) == "None"):
+    fetchedData = cursor.fetchall()
+    if (str(fetchedData[0][0]) == "None"):
         cursor.execute(f'''UPDATE "public"."userTable" SET "{today}" = '{data}' WHERE "userid" = '{userid}';''')
         conn.commit()
         cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
         print(f"data updated for {userid} as ",cursor.fetchall())
     
+def editData(userid, data):
+    colList = getColumns()
+    if today not in colList:
+        cursor.execute(f'''ALTER TABLE "public"."userTable" ADD COLUMN "{today}" varchar(10);''')
+        conn.commit()
+    cursor.execute(f'''UPDATE "public"."userTable" SET "{today}" = '{data}' WHERE "userid" = '{userid}';''')
+    conn.commit()
+    cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
+    print(f"data updated for {userid} as ",cursor.fetchall())
 
-# print(checkRecord('1'))
+

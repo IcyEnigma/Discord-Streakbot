@@ -63,13 +63,6 @@ async def input(ctx):
                             return False
                     return True
                 if(len(m)<=5 and charCheck(m)):
-
-                    # for i in range(len(jsonFile['elements'])):
-                    #     if(jsonFile['elements'][i]['user_id']==ctx.author.id):
-                    #         jsonFile['elements'][i]['dataRecord'][f'{today}'] = f'{m}'
-                    #         datajsonOut = open(r"./data.json", 'w')
-                    #         datajsonOut.write(json.dumps(jsonFile))
-                    #         datajsonOut.close()
                     sf.inputData(ctx.author.id, m)
                     print(f"input updated : {m}")
                     await ctx.send(f"Input from {ctx.author.name} recorded as '{m}' for {today}. Very Naice")
@@ -83,9 +76,6 @@ async def input(ctx):
 async def edit(ctx):
     await ctx.message.delete()
     today = date.today()
-    datajson = open(r"./data.json", 'r')
-    jsonFile = json.loads(datajson.read())
-    datajson.close()
     embed = discord.Embed(
         title = f"Enter the edited values for {today}",
         description ="||This request will timeout in 2 minuites||",
@@ -106,14 +96,12 @@ async def edit(ctx):
                         return False
                 return True
             if(len(m)<=5 and charCheck(m)):
-                for i in range(len(jsonFile['elements'])):
-                    if(jsonFile['elements'][i]['user_id']==ctx.author.id):
-                        jsonFile['elements'][i]['dataRecord'][f'{today}'] = f'{m}'
-                        datajsonOut = open(r"./data.json", 'w')
-                        datajsonOut.write(json.dumps(jsonFile))
-                        datajsonOut.close()
-                        print(f"input updated : {jsonFile['elements'][i]}")
-                        await ctx.send(f"Input changed by {ctx.author.name} to '{m}' for {today}. Very Naice")
+                record = sf.checkRecord(ctx.author.id)
+                if not record:
+                    await ctx.send("No original input, use *input.")
+                    return
+                sf.editData(ctx.author.id, m)
+                await ctx.send(f"Input changed by {ctx.author.name} from '{record}' to '{m}' for {today}. Very Naice")
             else:
                 await ctx.send("Invalid input, type *input to try again")
     except asyncio.TimeoutError:
