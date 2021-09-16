@@ -107,45 +107,33 @@ async def edit(ctx):
     except asyncio.TimeoutError:
         await sent.delete()
         await ctx.send("Cancelling due to timeout",delete_after=10)
+@client.command()
+async def viewmine(ctx):
+    rawData = sf.retriveData(ctx.author.id)
+    viewList = sf.calculateData(rawData)
+    if not viewList:
+        await ctx.send("No data to view")
+    embed=discord.Embed(title="User-Scores", colour = discord.Colour.orange())
+    embed.add_field(name = "Data", value = """
+    Paid Attention:  
+    Zoned Out:
+    Current Streak:  
+    Highest Streak:
+    Recent Record:  
+    """, inline=True)
+    embed.add_field(name=f"{ctx.author.name}", value=f"""
+    {viewList[0]}
+    {viewList[1]}
+    {viewList[2]}
+    {viewList[3]}
+    {viewList[4]}
+    """, inline=True) 
+    await ctx.send(embed=embed)
+
 
 @client.command()
 async def view(ctx):
-    def yncount(user):
-        totalstr = " "
-        for i in user['dataRecord'].values():
-            totalstr += i
-        ycount = totalstr.count("y")
-        ncount = totalstr.count("n")
-        latestStreak = 0
-        for i in range(len(totalstr)-1, 0, -1):
-            if totalstr[i] == "y":
-                latestStreak += 1
-            elif(totalstr[i] == "n"):
-                break
-
-        current_streak=0
-        biggest_streak=0
-        for i in totalstr:
-            if i=='y':
-                current_streak+=1
-            if(i=='n' or i==totalstr[len(totalstr)-1]):
-                if current_streak>biggest_streak:
-                    biggest_streak=current_streak
-                    current_streak=0
-        if(len(totalstr)<=10):
-            lateststr = totalstr
-        else:
-            lateststr = totalstr[len(totalstr)-11:]
-        return [ycount, ncount, latestStreak, biggest_streak, lateststr]
-
-    datajson = open(r"./data.json", 'r')
-    jsonFile = json.loads(datajson.read())
-    datajson.close()
-    infodict = {}
-    for element in jsonFile['elements']:
-        if(len(element['dataRecord'])==0):
-            await ctx.send(f"No inputs available to display for {element['name']}")
-        infodict[f"{element['name']}"] = yncount(element)
+    
     embed=discord.Embed(title="User-Scores", colour = discord.Colour.orange())
     embed.add_field(name = "Data", value = """
     Paid Attention:  

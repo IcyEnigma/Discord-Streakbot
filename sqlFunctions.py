@@ -86,3 +86,51 @@ def editData(userid, data):
     print(f"data updated for {userid} as ",cursor.fetchall())
 
 
+def retriveData(userid):
+    cols = getColumns()
+    data = {}
+    for i in cols:
+        if(i != "userid" and i != "username" and i != "maxstreak"):
+            cursor.execute(f'''SELECT "{i}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
+            data[i] = str(cursor.fetchall()[0][0])
+    return data
+
+def calculateData(data):
+    maxstreak = 0
+    attention = 0
+    zonedOut = 0
+    totalstr = ""
+    for i in data.values():
+        totalstr += i
+    none = totalstr.find("None")
+    if(none > -1):
+        totalstr = totalstr[:none]
+    if(len(totalstr) == 0):
+        return False
+    print("TOTAL STR = ", totalstr)
+    ycount = totalstr.count("y")
+    ncount = totalstr.count("n")
+    latestStreak = 0
+    for i in range(len(totalstr)-1, 0, -1):
+        if totalstr[i] == "y":
+            latestStreak += 1
+        elif(totalstr[i] == "n"):
+            break
+
+    current_streak=0
+    biggest_streak=0
+    for j in range(len(totalstr)):
+        i = totalstr[j]
+        if i=='y':
+            current_streak+=1
+        if(i=='n' or j == len(totalstr)-1):
+            if current_streak>biggest_streak:
+                biggest_streak=current_streak
+                current_streak=0
+    if(len(totalstr)<=10):
+        lateststr = totalstr
+    else:
+        lateststr = totalstr[len(totalstr)-11:]
+    return [ycount, ncount, latestStreak, biggest_streak, lateststr]
+
+        
