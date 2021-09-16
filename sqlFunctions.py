@@ -13,6 +13,7 @@ host=url.hostname,
 port=url.port
 )
 cursor = conn.cursor()
+today = str(date.today()).replace("-","_")
 
 def getUsers():
     cursor.execute('''SELECT userid FROM "public"."userTable";''')
@@ -27,19 +28,51 @@ def addUser(user):
     conn.commit()
     return True
 
-def checkRecord(user):
-    today = date.today()
-    today = str(today).replace("-","_")
+def checkRecord(userid):
     try:
-        cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{user.id}';''')
+        cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
     except psycopg2.errors.UndefinedColumn:
         print("NO ENTRY")
         return False
-    if(cursor.rowcount == 0):
+    if(str(cursor.fetchall()[0][0]) == "None"):
         return False
     resList =  cursor.fetchall()
-    final = []
-    for i in resList:
-        final.append(i[0])
-    print(final)
+    final = reslist[0][0]
     return final
+
+def getColumns():
+    cursor.execute('''SELECT * FROM "public"."userTable";''')
+    desc = str(cursor.description)
+    parseList = desc.split(",")
+    colList = []
+    start = False
+    end = False
+    colFlag = True
+    for i in parseList:
+        for j in range(len(i)):
+            if(i[j] == "'"):
+                start = j
+            if(start):
+                break
+        if colFlag:    
+            print(i[start+1:end])
+            colList.append(i[start+1:-1])
+            colFlag = False
+        else:
+            colFlag = True
+
+    return colList
+
+def inputData(userid, data):
+    colList = getColumns()
+    if today not in colList:
+        cursor.execute(f'''ALTER TABLE "public"."userTable" ADD COLUMN "{today}" varchar(10);''')
+        conn.commit()
+    cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
+    if (str(cursor.fetchall()[0][0]) == "None"):
+        cursor.execute(f'''UPDATE "public"."userTable" SET "{today}" = '{data}' WHERE "userid" = '{userid}';''')
+        conn.commit()
+        cursor.execute(f'''SELECT "{today}" FROM "public"."userTable" WHERE "userid" = '{userid}';''')
+        print(f"data updated for {userid} as ",cursor.fetchall())
+    
+
