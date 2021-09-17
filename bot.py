@@ -133,7 +133,6 @@ async def viewmine(ctx):
 
 @client.command()
 async def view(ctx):
-    
     embed=discord.Embed(title="User-Scores", colour = discord.Colour.orange())
     embed.add_field(name = "Data", value = """
     Paid Attention:  
@@ -142,13 +141,16 @@ async def view(ctx):
     Highest Streak:
     Recent Record:  
     """, inline=True)
-    for i in infodict.keys():
-        embed.add_field(name=f"{i}", value=f"""
-        {infodict[i][0]}
-        {infodict[i][1]}
-        {infodict[i][2]}
-        {infodict[i][3]}
-        {infodict[i][4]}
+    users = sf.getUsers()
+    for i in users:
+        rawData = sf.retriveData(i)
+        viewList = sf.calculateData(rawData)
+        embed.add_field(name=f"{sf.getUsername(i)}", value=f"""
+        {viewList[0]}
+        {viewList[1]}
+        {viewList[2]}
+        {viewList[3]}
+        {viewList[4]}
         """, inline=True) 
 
     embed.set_footer(text="ggwp")

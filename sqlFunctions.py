@@ -23,6 +23,10 @@ def getUsers():
         final.append(i[0])
     return final
 
+def getUsername(userid):
+    cursor.execute(f'''SELECT username FROM "public"."userTable" WHERE "userid" = '{userid}';''')
+    return str(cursor.fetchall()[0][0])
+
 def addUser(user):
     cursor.execute('''INSERT INTO "public"."userTable" (userid,username) VALUES (%s,%s);''', (user.id,user.name))
     conn.commit()
@@ -107,11 +111,10 @@ def calculateData(data):
         totalstr = totalstr[:none]
     if(len(totalstr) == 0):
         return False
-    print("TOTAL STR = ", totalstr)
     ycount = totalstr.count("y")
     ncount = totalstr.count("n")
     latestStreak = 0
-    for i in range(len(totalstr)-1, 0, -1):
+    for i in range((len(totalstr)-1), 0, -1):
         if totalstr[i] == "y":
             latestStreak += 1
         elif(totalstr[i] == "n"):
@@ -132,5 +135,3 @@ def calculateData(data):
     else:
         lateststr = totalstr[len(totalstr)-11:]
     return [ycount, ncount, latestStreak, biggest_streak, lateststr]
-
-        
