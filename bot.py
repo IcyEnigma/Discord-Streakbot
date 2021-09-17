@@ -158,13 +158,12 @@ async def view(ctx):
 
 @client.command()
 async def viewall(ctx):
-    datajson = open(r"./data.json", 'r')
-    jsonFile = json.loads(datajson.read())
-    datajson.close()
-    for user in jsonFile['elements']:
-        embed = discord.Embed(title = f"{user['name']}'s record", colour = discord.Colour.orange())
-        for i in user['dataRecord'].keys():
-            embed.add_field(name = f"{i}", value = f"{user['dataRecord'][i]}", inline=False)
+    
+    for user in sf.getUsers():
+        embed = discord.Embed(title = f"{sf.getUsername(user)}'s record", colour = discord.Colour.orange())
+        data = sf.retriveData(user)
+        for i in data.keys():
+            embed.add_field(name = f"{i}", value = f"{data[i]}", inline=False)
         await ctx.send(embed=embed)
 
 client.run("ODc0Mjk4MDQ0MDg1MDU5NTk0.YRE7gQ._I44cEpJCRwBxxfDbUB42L4GfPQ")
